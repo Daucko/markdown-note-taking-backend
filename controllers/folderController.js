@@ -135,7 +135,28 @@ const deleteFolder = async (req, res) => {
 };
 
 // Update folder positions (for drag & drop reordering)
-const updateFolderPositions = async (req, res) => {};
+const updateFolderPositions = async (req, res) => {
+  try {
+    const { folderIds } = req.body;
+
+    if (!Array.isArray(folderIds))
+      return res.status(400).json({ message: 'folderIds must be an array' });
+
+    // Update positions
+    const updatePromises = folderIds.map((folderId, index) =>
+      Folder.findOneAndUpdate(
+        { _id: folderId, author: req.user._id },
+        { position: index }
+      )
+    );
+
+    await Promise.all(updatePromises);
+
+    res.json({ message: 'Folder order updated successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 module.exports = {
   getAllFolders,
