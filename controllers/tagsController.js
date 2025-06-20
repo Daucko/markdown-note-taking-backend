@@ -43,6 +43,30 @@ const gatAllTags = async (req, res) => {
   }
 };
 
-const getSingleTag = async (req, res) => {};
+const getSingleTag = async (req, res) => {
+  try {
+    const tag = await Tag.findOne({
+      _id: req.params.id,
+      author: req.user._id,
+    });
 
-module.exports = { getAllTags };
+    if (!tag) return res.status(404).json({ message: 'Tag not found' });
+
+    // Get actual usage count
+    const usageCount = await Note.countDocuments({
+      author: req.user._id,
+      tags: tag._id,
+    });
+
+    res.json({
+      tag: {
+        ...tag.toObject(),
+        usageCount,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { getAllTags, getSingleTag };
