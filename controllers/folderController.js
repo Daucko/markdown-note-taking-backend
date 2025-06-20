@@ -115,21 +115,22 @@ const deleteFolder = async (req, res) => {
     // Check if folder has notes
     const noteCount = await Note.countDocuments({
       author: req.user._id,
-      folder._id
-    })
+      folder: folder._id,
+    });
 
-    if ( noteCount > 0) {
+    if (noteCount > 0) {
       return res.status(400).json({
-        message: 'Cannot delete folder with existing notes. Move or delete notes first.',
-        noteCount
-      })
+        message:
+          'Cannot delete folder with existing notes. Move or delete notes first.',
+        noteCount,
+      });
     }
 
-    await Folder.findByIdAndDelete(req.params.id)
+    await Folder.findByIdAndDelete(req.params.id);
 
-    res.json({ message: 'Folder deleted successfully'})
+    res.json({ message: 'Folder deleted successfully' });
   } catch (err) {
-    res.status(500).json({ message: err.message})
+    res.status(500).json({ message: err.message });
   }
 };
 
