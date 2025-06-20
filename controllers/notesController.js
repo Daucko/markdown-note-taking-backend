@@ -341,12 +341,45 @@ const getSpecificVersionContent = async (req, res) => {
 
     const version = await NoteVersion.findOne({
       nodeId: req.params.id,
-      version: req.params.version
-    }).populate('author', 'username')
+      version: req.params.version,
+    }).populate('author', 'username');
 
-    if (!version) return res.status(404).json({ message: 'Version not found'})
+    if (!version) return res.status(404).json({ message: 'Version not found' });
 
-    res.json({ version})
+    res.json({ version });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const duplicateNote = async (req, res) => {
+  try {
+    const originalNote = await Note.findOne({
+      _id: req.params.id,
+      author: req.user._id,
+    });
+
+    if (!originalNote)
+      return res.status(404).json({ message: 'Note not found' });
+
+    // Create a new note with the same content but a new title
+    const duplicateNote = new Note({
+      title: `${originalNote.title} (Copy)`,
+      content: originalNote.content,
+      author: req.user._id,
+      folder: originalNote.folder,
+      tags: originalNote.tags,
+    });
+
+    await duplicateNote.save();
+    // Populate references
+    await duplicateNote.populate('folder', 'name color');
+    await duplicateNote.populate('tags', 'name color');
+
+    res.status(201).json({
+      message: 'Note duplicated successfully',
+      note: duplicateNote,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -357,20 +390,21 @@ const downloadNoteAsMarkdown = async (req, res) => {
     const note = await Note.findOne({
       _id: req.params.id,
       author: req.user._id,
-    })
+    });
 
     if (!note) return res.status(404).json({ message: 'Note not found' });
 
-    const filename = `${note.title.replace(/[^a-z0-9]/gi, '_').toLowercase()}.md`
+    const filename = `${note.title
+      .replace(/[^a-z0-9]/gi, '_')
+      .toLowercase()}.md`;
 
-    res.setHeader('Content-Type', 'text/markdown')
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
-    res.send(note.content)
-
+    res.setHeader('Content-Type', 'text/markdown');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send(note.content);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-}
+};
 
 module.exports = {
   getAllNotes,
@@ -383,5 +417,6 @@ module.exports = {
   toggleArchiveNote,
   getNoteVersionHistory,
   getNoteVersionHistory,
-  downloadNoteAsMarkdown
+  duplicateNote,
+  downloadNoteAsMarkdown,
 };
