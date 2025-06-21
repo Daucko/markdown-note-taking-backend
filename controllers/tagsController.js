@@ -1,7 +1,7 @@
 const Tag = require('../models/Tag');
 const Note = require('../models/Note');
 
-const gatAllTags = async (req, res) => {
+const getAllTags = async (req, res) => {
   try {
     const tags = Tag.find({ author: req.user._id }).sort({
       usageCount: -1,
@@ -69,4 +69,52 @@ const getSingleTag = async (req, res) => {
   }
 };
 
-module.exports = { getAllTags, getSingleTag };
+const createNewTag = async (req, res) => {
+  try {
+    const tagData = {
+      ...req.body,
+      author: req.user._id,
+    };
+
+    const tag = await Tag.create(tagData);
+
+    res.status(201).json({
+      message: 'Tag created successfully',
+      tag: {
+        ...tag.toObject(),
+        usageCount: 0,
+      },
+    });
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({ message: 'Tag name already exists' });
+    }
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const updateTag = async (req, res) => {
+  try {
+    const tag = await Tag.findOneAndUpdate(
+      { _id: req.params.id, author: req.user._id },
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!tag) return res.status(404).json({ error: 'Tag not found' });
+
+    res.json({
+      message: 'Tag updated successfully',
+      tag,
+    });
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({ message: 'Tag name already exists' });
+    }
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const deleteTag = async (req, res) => {};
+
+module.exports = { getAllTags, getSingleTag, createNewTag, updateTag };
