@@ -115,6 +115,36 @@ const updateTag = async (req, res) => {
   }
 };
 
-const deleteTag = async (req, res) => {};
+const deleteTag = async (req, res) => {
+  try {
+    const tag = await Tag.findOne({
+      _id: req.params.id,
+      author: req.user._id,
+    });
 
-module.exports = { getAllTags, getSingleTag, createNewTag, updateTag };
+    if (!tag) return res.status(404).json({ message: 'Tag not found' });
+
+    // Remove tag from all notes
+    await Note.updateMany(
+      { author: req.user._id, tags: tag._id },
+      { $pull: { tags: tag._id } }
+    );
+
+    await Tag.findByIdAndDelete(req.params.id);
+
+    res.json({ message: 'Tag deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const getNotesByTag = async (req, res) => {};
+
+module.exports = {
+  getAllTags,
+  getSingleTag,
+  createNewTag,
+  updateTag,
+  deleteTag,
+  getNotesByTag,
+};
