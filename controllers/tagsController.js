@@ -138,7 +138,50 @@ const deleteTag = async (req, res) => {
   }
 };
 
-const getNotesByTag = async (req, res) => {};
+const getNotesByTag = async (req, res) => {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+
+    const tag = await Tag.findOne({
+      _id: req.params.id,
+      author: req.user._id,
+    });
+
+    if (!tag) return res.status(404).json({ message: 'Tag not found' });
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const notes = await Note.find({
+      author: req.user._id,
+      tags: tag._id,
+    })
+      .populate('folder', 'name color')
+      .populate('tag', 'name color')
+      .sort({ isPinned: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .select('-htmlContent');
+
+    const total = await Note.countDocuments({
+      author: req.user._id,
+      tags: tag._id,
+    });
+
+    res.json({
+      tag,
+      notes,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / parseInt(limit)),
+        totalNotes: total,
+        hasNext: skip + notes.length < total,
+        hasPrev: parseInt(page) > 1,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 module.exports = {
   getAllTags,
