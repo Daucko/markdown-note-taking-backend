@@ -183,7 +183,24 @@ const getNotesByTag = async (req, res) => {
   }
 };
 
-const autoCompleteTagNames = async (req, res) => {};
+const autoCompleteTagNames = async (req, res) => {
+  try {
+    const { query } = req.params;
+    const { limit = 10 } = req.query;
+
+    const tags = await Tag.find({
+      author: req.user._id,
+      name: { $regex: query, $options: 'i' },
+    })
+      .sort({ usageCount: -1, name: 1 })
+      .limit(parseInt(limit))
+      .select('name color usageCount');
+
+    res.json({ tags });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 module.exports = {
   getAllTags,
@@ -192,4 +209,5 @@ module.exports = {
   updateTag,
   deleteTag,
   getNotesByTag,
+  autoCompleteTagNames,
 };
