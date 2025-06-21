@@ -183,6 +183,8 @@ const getNotesByTag = async (req, res) => {
   }
 };
 
+const autoCompleteTagNames = async (req, res) => {};
+
 module.exports = {
   getAllTags,
   getSingleTag,
