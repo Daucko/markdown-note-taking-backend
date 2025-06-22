@@ -168,9 +168,16 @@ const handleProfileUpdate = async (req, res) => {
     const user = await User.findByIdAndUpdate(req.user._id, actualUpdates, {
       new: true,
       runValidators: true,
-    }).select(['-refreshToken', '-password', '__v', '_isVerified']); // Exclude sensitive fields
+    });
 
-    res.json({ user });
+    // Exclude password and refreshToken from the response
+    const userWithoutSensitiveData = user.toObject();
+    delete userWithoutSensitiveData.password;
+    delete userWithoutSensitiveData.refreshToken;
+    delete userWithoutSensitiveData.__v;
+    delete userWithoutSensitiveData._isVerified;
+
+    res.json({ user: userWithoutSensitiveData });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
