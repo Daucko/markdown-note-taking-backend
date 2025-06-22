@@ -109,7 +109,11 @@ const createNewNote = async (req, res) => {
       note.folder = 'default-folder-id'; // Replace with actual default folder ID
     }
 
-    res.status(201).json(note);
+    const noteWithoutSensitiveData = note.toObj();
+    delete noteWithoutSensitiveData.author;
+    delete noteWithoutSensitiveData.__v;
+
+    res.status(201).json({ note: noteWithoutSensitiveData });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to create note' });
