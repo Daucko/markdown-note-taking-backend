@@ -118,6 +118,8 @@ const handleLogin = async (req, res) => {
     const userWithoutSensitiveData = user.toObject();
     delete userWithoutSensitiveData.password;
     delete userWithoutSensitiveData.refreshToken;
+    delete userWithoutSensitiveData.__v;
+    delete userWithoutSensitiveData._isVerified;
 
     res.json({
       accessToken,
@@ -166,7 +168,7 @@ const handleProfileUpdate = async (req, res) => {
     const user = await User.findByIdAndUpdate(req.user._id, actualUpdates, {
       new: true,
       runValidators: true,
-    }).select(['-refreshToken', '-password']); // Exclude sensitive fields
+    }).select(['-refreshToken', '-password', '__v', '_isVerified']); // Exclude sensitive fields
 
     res.json({ user });
   } catch (err) {
