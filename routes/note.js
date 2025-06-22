@@ -3,11 +3,11 @@ const Router = express.Router();
 const notesController = require('../controllers/notesController');
 const verifyJWT = require('../middleware/verifyJWT');
 
-Router.route('/notes')
+Router.route('/')
   .get(verifyJWT, notesController.getAllNotes)
   .post(verifyJWT, notesController.createNewNote);
 
-Router.route('/note/:id')
+Router.route('/:id')
   .patch(verifyJWT, notesController.updateNote)
   .delete(verifyJWT, notesController.deleteNote);
 

@@ -11,14 +11,14 @@ const handleRegistration = async (req, res) => {
     return res.status(400).json({ message: 'Email and password are required' });
 
   // check for duplicate email in the DB
-  const duplicate = await User.findOne({ email }).exec();
+  const duplicate = await User.findOne({ email });
   if (duplicate)
     return res
       .status(409)
       .json({ message: 'User with this email already exist' });
   try {
     // Encrypt the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     // Create and store the new user
     const user = await User.create({
@@ -193,7 +193,7 @@ const handlePasswordChange = async (req, res) => {
     if (!isMatch)
       return res.status(400).json({ message: 'Current password is incorrect' });
 
-    user.password = newPassword;
+    user.password = await bcrypt.hash(newPassword, 12);
     await user.save();
 
     res.json({ message: 'Password updated successfully' });

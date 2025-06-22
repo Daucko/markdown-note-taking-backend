@@ -28,7 +28,7 @@ const getAllNotes = async (req, res) => {
     if (favorite !== undefined) query.isFavorite = favorite === 'true';
 
     // Sort options
-    const sortOrder = (order = 'desc' ? -1 : 1);
+    const sortOrder = order === 'desc' ? -1 : 1;
     const sortObj = { [sort]: sortOrder };
 
     // Add pinned notes to top if not specifically filtered
