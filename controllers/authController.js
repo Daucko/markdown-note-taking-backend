@@ -65,7 +65,7 @@ const handleRegistration = async (req, res) => {
 const handleLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    
+
     // Check if there's email & password in the req.body
     if (!email || !password) {
       return res.status(400).json({
@@ -129,7 +129,7 @@ const handleLogin = async (req, res) => {
   }
 };
 
-const handleVerifyEmail = async (req, res) => { 
+const handleVerifyEmail = async (req, res) => {
   const token = req.query.token;
   if (!token)
     return res.status(400).json({ message: 'Verification token is required.' });
@@ -145,7 +145,7 @@ const handleVerifyEmail = async (req, res) => {
     return res.status(200).json({ message: 'Email verified successfully!' });
   } catch (err) {
     return res
-      .status(500) 
+      .status(500)
       .json({ message: 'Invalid or expired verification token.' });
   }
 };
@@ -166,7 +166,7 @@ const handleProfileUpdate = async (req, res) => {
     const user = await User.findByIdAndUpdate(req.user._id, actualUpdates, {
       new: true,
       runValidators: true,
-    });
+    }).select(['-refreshToken', '-password']); // Exclude sensitive fields
 
     res.json({ user });
   } catch (err) {

@@ -14,23 +14,8 @@ const authLimiter = rateLimit({
 
 router.post('/register', authLimiter, authController.handleRegistration);
 router.get('/verify-email', authController.handleVerifyEmail);
-router.post(
-  '/login',
-  checkIsVerified,
-  authLimiter,
-  authController.handleLogin
-);
-router.put(
-  '/profile',
-  checkIsVerified,
-  verifyJWT,
-  authController.handleProfileUpdate
-);
-router.patch(
-  'auth/password',
-  verifyJWT,
-  checkIsVerified,
-  authController.handlePasswordChange
-);
+router.post('/login', checkIsVerified, authLimiter, authController.handleLogin);
+router.put('/profile', verifyJWT, authController.handleProfileUpdate);
+router.patch('/password', verifyJWT, authController.handlePasswordChange);
 
 module.exports = router;
