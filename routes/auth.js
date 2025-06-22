@@ -12,16 +12,16 @@ const authLimiter = rateLimit({
   message: 'Too many authentication attempts, please try again later.',
 });
 
-router.post('/auth/register', authLimiter, authController.handleRegistration);
-router.post('/auth/verify-email', authController.handleVerifyEmail);
+router.post('/register', authLimiter, authController.handleRegistration);
+router.get('/verify-email', authController.handleVerifyEmail);
 router.post(
-  '/auth/login',
+  '/login',
   checkIsVerified,
   authLimiter,
   authController.handleLogin
 );
 router.put(
-  '/auth/profile',
+  '/profile',
   checkIsVerified,
   verifyJWT,
   authController.handleProfileUpdate
