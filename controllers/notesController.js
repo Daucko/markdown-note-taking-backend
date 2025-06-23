@@ -422,7 +422,7 @@ module.exports = {
   toggleNoteFavoriteStatus,
   toggleArchiveNote,
   getNoteVersionHistory,
-  getNoteVersionHistory,
+  getSpecificVersionContent,
   duplicateNote,
   downloadNoteAsMarkdown,
 };

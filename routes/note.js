@@ -8,6 +8,7 @@ Router.route('/')
   .post(verifyJWT, notesController.createNewNote);
 
 Router.route('/:id')
+  .get(verifyJWT, notesController.getSingleNote)
   .patch(verifyJWT, notesController.updateNote)
   .delete(verifyJWT, notesController.deleteNote);
 
