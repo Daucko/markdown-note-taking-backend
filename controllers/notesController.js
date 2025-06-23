@@ -109,7 +109,7 @@ const createNewNote = async (req, res) => {
       note.folder = 'default-folder-id'; // Replace with actual default folder ID
     }
 
-    const noteWithoutSensitiveData = note.toObj();
+    const noteWithoutSensitiveData = note.toObject();
     delete noteWithoutSensitiveData.author;
     delete noteWithoutSensitiveData.__v;
 

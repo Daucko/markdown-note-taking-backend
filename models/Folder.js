@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const folderSchema = new chema(
+const folderSchema = new Schema(
   {
     name: {
       type: String,
