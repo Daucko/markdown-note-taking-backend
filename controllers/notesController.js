@@ -3,8 +3,8 @@ const DOMPurify = require('isomorphic-dompurify');
 
 const Note = require('../models/Note');
 const NoteVersion = require('../models/NoteVersion');
-const Folder = require('../models/Folder'); // Ensure Folder model is registered
-const Tag = require('../models/Tag'); // Ensure Tag model is registered
+const Folder = require('../models/Folder');
+const Tag = require('../models/Tag');
 
 const getAllNotes = async (req, res) => {
   try {
