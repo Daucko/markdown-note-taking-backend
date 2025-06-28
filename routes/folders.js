@@ -11,12 +11,12 @@ router
   .get(verifyJWT, folderController.getAllFolders)
   .post(verifyJWT, folderController.createNewFolder);
 
+router.put('/reorder', verifyJWT, folderController.updateFolderPosition);
+
 router
   .route('/:id')
   .get(verifyJWT, folderController.getSingleFolder)
   .put(verifyJWT, folderController.updateFolder)
   .delete(verifyJWT, folderController.deleteFolder);
-
-router.put('/reorder', verifyJWT, folderController.updateFolderPosition);
 
 module.exports = router;
