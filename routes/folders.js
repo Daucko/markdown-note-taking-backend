@@ -10,3 +10,9 @@ router
   .route('/')
   .get(verifyJWT, folderController.getAllFolders)
   .post(verifyJWT, folderController.createNewFolder);
+
+router
+  .route('/:id')
+  .get(verifyJWT, folderController.getSingleFolder)
+  .put(verifyJWT, folderController.updateFolder)
+  .delete(verifyJWT, folderController.deleteFolder);
