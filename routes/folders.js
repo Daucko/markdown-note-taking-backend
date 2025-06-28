@@ -16,3 +16,5 @@ router
   .get(verifyJWT, folderController.getSingleFolder)
   .put(verifyJWT, folderController.updateFolder)
   .delete(verifyJWT, folderController.deleteFolder);
+
+router.put('/reorder', verifyJWT, folderController);
