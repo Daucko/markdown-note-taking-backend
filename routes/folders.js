@@ -6,4 +6,7 @@ const folderController = require('../controllers/folderController');
 
 const router = express.Router();
 
-router.get('/', verifyJWT);
+router
+  .route('/')
+  .get(verifyJWT, folderController.getAllFolders)
+  .post(verifyJWT, folderController.createNewFolder);
