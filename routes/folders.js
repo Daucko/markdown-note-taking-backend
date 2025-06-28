@@ -1,6 +1,8 @@
-const express = require('express')
+const express = require('express');
 
 const checkIsVerified = require('../middleware/checkIsVerified');
 const verifyJWT = require('../middleware/verifyJWT');
 
-const router = express.Router()
+const router = express.Router();
+
+router.get('', verifyJWT);
