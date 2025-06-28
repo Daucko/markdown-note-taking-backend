@@ -49,7 +49,7 @@ const getSingleFolder = async (req, res) => {
 
     res.json({
       folder: {
-        ...folder.toObject(),
+        ...folder.toObject({ versionKey: false }), // Remove __v
         noteCount,
       },
     });
@@ -94,7 +94,7 @@ const updateFolder = async (req, res) => {
 
     res.json({
       message: 'Folder updated successfully',
-      folder,
+      folder: folder.toObject({ versionKey: false }), // Remove __v
     });
   } catch (err) {
     if (err.code === 11000)
