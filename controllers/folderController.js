@@ -19,8 +19,9 @@ const getAllFolders = async (req, res) => {
       const countData = folderCounts.find(
         (c) => c._id && c._id.toString() === folder._id.toString()
       );
+      const folderObj = folder.toObject({ versionKey: false }); // Remove __v
       return {
-        ...folder.toObject(),
+        ...folderObj,
         noteCount: countData ? countData.count : 0,
       };
     });
