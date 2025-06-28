@@ -135,7 +135,7 @@ const deleteFolder = async (req, res) => {
 };
 
 // Update folder positions (for drag & drop reordering)
-const updateFolderPositions = async (req, res) => {
+const updateFolderPosition = async (req, res) => {
   try {
     const { folderIds } = req.body;
 
@@ -164,5 +164,5 @@ module.exports = {
   createNewFolder,
   updateFolder,
   deleteFolder,
-  updateFolderPositions,
+  updateFolderPosition,
 };
