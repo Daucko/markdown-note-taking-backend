@@ -5,4 +5,4 @@ const verifyJWT = require('../middleware/verifyJWT');
 
 const router = express.Router();
 
-router.get('', verifyJWT);
+router.get('/', verifyJWT);
