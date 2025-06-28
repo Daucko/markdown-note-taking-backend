@@ -193,6 +193,9 @@ const updateNote = async (req, res) => {
       .populate('folder', 'name color')
       .populate('tags', 'name color');
 
+    const noteWithoutSensitiveData = updatedNote.toObject();
+    delete noteWithoutSensitiveData.__v;
+
     res.json({
       message: 'Note updated successfully',
       note: updatedNote,
@@ -234,6 +237,7 @@ const getSingleNote = async (req, res) => {
       _id: req.params.id,
       author: req.user._id,
     })
+      .select('-__v')
       .populate('folder', 'name color')
       .populate('tags', 'name color')
       .populate('author', 'username');
