@@ -18,3 +18,5 @@ router
   .delete(verifyJWT, folderController.deleteFolder);
 
 router.put('/reorder', verifyJWT, folderController.updateFolderPosition);
+
+module.exports = router;
