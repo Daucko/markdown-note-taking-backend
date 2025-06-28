@@ -70,7 +70,7 @@ const createNewFolder = async (req, res) => {
     res.status(201).json({
       message: 'Folder created successfully',
       folder: {
-        ...folder.toObject(),
+        ...folder.toObject({ versionKey: false }), // Remove __v
         noteCount: 0,
       },
     });
