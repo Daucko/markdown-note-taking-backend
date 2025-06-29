@@ -75,7 +75,7 @@ const createNewNote = async (req, res) => {
   if (!req.body.title)
     return res.status(400).json({ message: 'Title is required' });
   try {
-    const { title, content } = req.body;
+    const { title, content, tags } = req.body; // Accept tags from request
 
     // Convert markdown content to HTML
     const parsedContent = marked.parse(content);
@@ -101,6 +101,7 @@ const createNewNote = async (req, res) => {
       author: req.user._id,
       wordCount,
       readingTime,
+      tags, // Save tags if provided
     });
 
     // If folder is provided, associate it with the note
@@ -125,7 +126,7 @@ const createNewNote = async (req, res) => {
 const updateNote = async (req, res) => {
   const noteId = req.params.id;
   const authorId = req.user._id;
-  const { title, content } = req.body;
+  const { title, content, tags } = req.body; // Accept tags from request
 
   // check if the note has title
   if (!title) return res.status(400).json({ message: `Title is required` });
@@ -174,20 +175,23 @@ const updateNote = async (req, res) => {
     const readingTime = Math.ceil(wordCount / 200);
 
     // Update the note with all new fields
+    const updateFields = {
+      title,
+      content,
+      htmlContent,
+      excerpt,
+      wordCount,
+      readingTime,
+      $inc: { version: 1 }, // Increment version directly in the update
+    };
+    if (tags) updateFields.tags = tags; // Update tags if provided
+
     const updatedNote = await Note.findOneAndUpdate(
       {
         _id: noteId,
         author: authorId,
       },
-      {
-        title,
-        content,
-        htmlContent,
-        excerpt,
-        wordCount,
-        readingTime,
-        $inc: { version: 1 }, // Increment version directly in the update
-      },
+      updateFields,
       { new: true }
     )
       .populate('folder', 'name color')
@@ -198,7 +202,7 @@ const updateNote = async (req, res) => {
 
     res.json({
       message: 'Note updated successfully',
-      note: updatedNote,
+      note: noteWithoutSensitiveData,
     });
   } catch (err) {
     console.error(err);
