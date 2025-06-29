@@ -31,7 +31,7 @@ const getAllTags = async (req, res) => {
         }
 
         return {
-          ...tag.toObject(),
+          ...tag.toObject({ versionKey: false }),
           usageCount: actualCount,
         };
       })
@@ -60,7 +60,7 @@ const getSingleTag = async (req, res) => {
 
     res.json({
       tag: {
-        ...tag.toObject(),
+        ...tag.toObject({ versionKey: false }),
         usageCount,
       },
     });
@@ -81,7 +81,7 @@ const createNewTag = async (req, res) => {
     res.status(201).json({
       message: 'Tag created successfully',
       tag: {
-        ...tag.toObject(),
+        ...tag.toObject({ versionKey: false }),
         usageCount: 0,
       },
     });
@@ -168,7 +168,7 @@ const getNotesByTag = async (req, res) => {
     });
 
     res.json({
-      tag,
+      tag: tag.toObject({ versionKey: false }),
       notes,
       pagination: {
         currentPage: parseInt(page),
