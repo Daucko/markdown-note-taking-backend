@@ -156,7 +156,7 @@ const getNotesByTag = async (req, res) => {
       tags: tag._id,
     })
       .populate('folder', 'name color')
-      .populate('tag', 'name color')
+      .populate('tags', 'name color')
       .sort({ isPinned: -1, createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit))
