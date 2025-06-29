@@ -13,7 +13,8 @@ const cookieParser = require('cookie-parser');
 
 const authRoutes = require('./routes/auth');
 const noteRoutes = require('./routes/note');
-const folderRoutes = require('./routes/folders');
+const folderRoutes = require('./routes/folder');
+const tagRoutes = require('./routes/tag');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -58,7 +59,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', noteRoutes);
 app.use('/api/folders', folderRoutes);
-// app.use('/api/tags', tagRoutes);
+app.use('/api/tags', tagRoutes);
 // app.use('/api/search', searchRoutes);
 
 // Health check endpoints
