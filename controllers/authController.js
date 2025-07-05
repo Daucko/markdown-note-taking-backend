@@ -127,8 +127,13 @@ const handleRegistration = async (req, res) => {
 
 const cleanupUnverifiedUsers = async () => {
   try {
-  } catch (err) {}
+    console.log('Running cleanup of unverified users');
+  } catch (err) {
+    console.error('Cleanup:', err);
+  }
 };
+
+// Run cleanup every hour
 
 const handleLogin = async (req, res) => {
   try {
