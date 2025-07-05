@@ -1,0 +1,41 @@
+{
+  "name": "markdown-note-taking",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "dev": "nodemon server"
+  },
+  "keywords": [
+    "markdown",
+    "notes",
+    "api",
+    "express",
+    "mongodb",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "compression": "^1.8.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
+    "isomorphic-dompurify": "^2.25.0",
+    "jsonwebtoken": "^9.0.2",
+    "marked": "^15.0.12",
+    "mongoose": "^8.14.0",
+    "nodemailer": "^7.0.3",
+    "redis": "^5.5.6",
+    "uuid": "^11.1.0"
+  }
+}
