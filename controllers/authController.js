@@ -125,6 +125,11 @@ const handleRegistration = async (req, res) => {
   // }
 };
 
+const cleanupUnverifiedUsers = async () => {
+  try {
+  } catch (err) {}
+};
+
 const handleLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
