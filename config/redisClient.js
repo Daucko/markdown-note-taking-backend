@@ -53,7 +53,7 @@ class RedisClient {
 
   async disconnect() {
     if (!this.connected) return;
-    await this.client.disconnect();
+    await this.client.quit();
     this.connected = false;
   }
 }
