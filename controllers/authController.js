@@ -215,7 +215,7 @@ const handleLogin = async (req, res) => {
       user: userWithoutSensitiveData,
     });
   } catch (err) {
-    console.error('Login error:', err); // Log the error for debugging
+    console.error('Login error:', err);
     res.status(500).json({ message: 'Login failed' });
   }
 };
