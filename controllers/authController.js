@@ -283,6 +283,8 @@ const handleVerifyEmail = async (req, res) => {
   }
 };
 
+const handleResendVerification = async (req, res) => {};
+
 const handleProfileUpdate = async (req, res) => {
   try {
     const updates = req.body;
