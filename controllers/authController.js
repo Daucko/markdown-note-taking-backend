@@ -287,6 +287,8 @@ const handleResendVerification = async (req, res) => {
   const { email } = req.body;
 
   if (!email) return res.status(400).json({ message: 'Email is required' });
+  if (verifiedUser)
+    return res.status(400).json({ message: 'Email is already verified' });
 
   try {
     // Check if user is already verified
