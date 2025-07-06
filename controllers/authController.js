@@ -295,15 +295,16 @@ const handleResendVerification = async (req, res) => {
       return res.status(400).json({ message: 'Email is already verified' });
 
     // Check if verified user exists in Redis
-    const unverified = await redisClient.get(`unverified:${email}`) 
-    if (!unverified) 
-      return res.status(404).json(
-    {
-      message: 'No pending registration for this email'
-    })
+    const unverified = await redisClient.get(`unverified:${email}`);
+    if (!unverified)
+      return res.status(404).json({
+        message: 'No pending registration for this email',
+      });
 
     // Get the user data
-    const userData = await redisClient.get(`unverified:${unverified.verificationToken}`)
+    const userData = await redisClient.get(
+      `unverified:${unverified.verificationToken}`
+    );
 
     if (!userData) {
       return res.status(404).json({ message: 'Registration data not found' });
@@ -320,21 +321,17 @@ const handleResendVerification = async (req, res) => {
     await Promise.all([
       redisClient.del(`unverified:${unverified.verificationToken}`),
       redisClient.del(`unverified:${email}`),
-      redisClient.set(
-        `unverified:${newVerificationToken}`,
-        userData,
-        3600
-      ),
+      redisClient.set(`unverified:${newVerificationToken}`, userData, 3600),
       redisClient.set(
         `unverified:${email}`,
         { verificationToken: newVerificationToken },
         3600
-      )
+      ),
     ]);
 
     // Send new verification email
     const verificationLink = `${process.env.BASE_URL}/api/auth/verify-email?token=${newVerificationToken}`;
-    
+
     const emailSubject = 'New Verification Link';
     const emailMessage = `
       <h2>Here's your new verification link</h2>
@@ -345,14 +342,13 @@ const handleResendVerification = async (req, res) => {
 
     await sendEmail(email, emailMessage, emailSubject);
 
-    return res.status(200).json({ 
+    return res.status(200).json({
       message: 'New verification email sent',
-      email
+      email,
     });
   } catch (err) {
-    console.error('Resend verification error:', err)
-    return res.status(500).json({ message: 'Failed to resend verification'})
-
+    console.error('Resend verification error:', err);
+    return res.status(500).json({ message: 'Failed to resend verification' });
   }
 };
 
@@ -410,6 +406,7 @@ module.exports = {
   handleRegistration,
   handleLogin,
   handleVerifyEmail,
+  handleResendVerification,
   handleProfileUpdate,
   handlePasswordChange,
 };
