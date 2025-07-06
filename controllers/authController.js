@@ -165,12 +165,10 @@ const handleLogin = async (req, res) => {
 
     // Check if user is verified
     if (!user._isVerified)
-      return res
-        .status(403)
-        .json({
-          message:
-            'Account not verified. Please check your email for verification link.',
-        });
+      return res.status(403).json({
+        message:
+          'Account not verified. Please check your email for verification link.',
+      });
 
     // Compare the password with the hashed password
     const isMatch = await bcrypt.compare(password, user.password);
@@ -218,7 +216,7 @@ const handleLogin = async (req, res) => {
     });
   } catch (err) {
     console.error('Login error:', err); // Log the error for debugging
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: 'Login failed' });
   }
 };
 
