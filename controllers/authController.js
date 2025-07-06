@@ -221,7 +221,7 @@ const handleLogin = async (req, res) => {
 };
 
 const handleVerifyEmail = async (req, res) => {
-  const token = req.query;
+  const token = req.query.token;
   if (!token)
     return res.status(400).json({ message: 'Verification token is required.' });
 
@@ -296,7 +296,64 @@ const handleResendVerification = async (req, res) => {
 
     // Check if verified user exists in Redis
     const unverified = await redisClient.get(`unverified:${email}`) 
-  } catch (err) {}
+    if (!unverified) 
+      return res.status(404).json(
+    {
+      message: 'No pending registration for this email'
+    })
+
+    // Get the user data
+    const userData = await redisClient.get(`unverified:${unverified.verificationToken}`)
+
+    if (!userData) {
+      return res.status(404).json({ message: 'Registration data not found' });
+    }
+
+    // Create new token
+    const newVerificationToken = jwt.sign(
+      { email: userData.email, username: userData.username },
+      process.env.ACCESS_TOKEN,
+      { expiresIn: '1h' }
+    );
+
+    // Update Redis records
+    await Promise.all([
+      redisClient.del(`unverified:${unverified.verificationToken}`),
+      redisClient.del(`unverified:${email}`),
+      redisClient.set(
+        `unverified:${newVerificationToken}`,
+        userData,
+        3600
+      ),
+      redisClient.set(
+        `unverified:${email}`,
+        { verificationToken: newVerificationToken },
+        3600
+      )
+    ]);
+
+    // Send new verification email
+    const verificationLink = `${process.env.BASE_URL}/api/auth/verify-email?token=${newVerificationToken}`;
+    
+    const emailSubject = 'New Verification Link';
+    const emailMessage = `
+      <h2>Here's your new verification link</h2>
+      <p>Please verify your email by clicking the link below:</p>
+      <a href="${verificationLink}">Verify Email</a>
+      <p>This link will expire in 1 hour.</p>
+    `;
+
+    await sendEmail(email, emailMessage, emailSubject);
+
+    return res.status(200).json({ 
+      message: 'New verification email sent',
+      email
+    });
+  } catch (err) {
+    console.error('Resend verification error:', err)
+    return res.status(500).json({ message: 'Failed to resend verification'})
+
+  }
 };
 
 const handleProfileUpdate = async (req, res) => {
