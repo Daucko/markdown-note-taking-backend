@@ -154,23 +154,27 @@ const handleLogin = async (req, res) => {
       // Check if user exists in unverified state
       const unverified = await redisClient.get(`unverified:${email}`);
       if (unverified)
-        return res
-          .status(403)
-          .json({
-            message:
-              'Email not verified. Please check your email for the verification link.',
-          });
+        return res.status(403).json({
+          message:
+            'Email not verified. Please check your email for the verification link.',
+        });
       return res.status(401).json({
         message: 'Invalid credentials',
       });
     }
 
     // Check if user is verified
-    if (!user._isVerified) return res.status(403).json({ message: 'Account not verified. Please check your email for verification link.'})
+    if (!user._isVerified)
+      return res
+        .status(403)
+        .json({
+          message:
+            'Account not verified. Please check your email for verification link.',
+        });
 
     // Compare the password with the hashed password
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(401).json({
         message: 'Invalid credentials',
       });
