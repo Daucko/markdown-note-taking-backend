@@ -18,4 +18,6 @@ router.post('/login', checkIsVerified, authLimiter, authController.handleLogin);
 router.put('/profile', verifyJWT, authController.handleProfileUpdate);
 router.patch('/password', verifyJWT, authController.handlePasswordChange);
 
+router.post('resend-verification', authLimiter, authController.handleResendVerification)
+
 module.exports = router;
