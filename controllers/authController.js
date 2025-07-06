@@ -134,25 +134,39 @@ const cleanupUnverifiedUsers = async () => {
 };
 
 // Run cleanup every hour
+setInterval(cleanupUnverifiedUsers, 3600000);
 
 const handleLogin = async (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if there's email & password in the req.body
+  if (!email || !password) {
+    return res.status(400).json({
+      message: 'Email and password are required',
+    });
+  }
+
   try {
-    const { email, password } = req.body;
-
-    // Check if there's email & password in the req.body
-    if (!email || !password) {
-      return res.status(400).json({
-        message: 'Email and password are required',
-      });
-    }
-
     // Check for existing user - need to include password for comparison
     const user = await User.findOne({ email }).select('+password');
+
     if (!user) {
+      // Check if user exists in unverified state
+      const unverified = await redisClient.get(`unverified:${email}`);
+      if (unverified)
+        return res
+          .status(403)
+          .json({
+            message:
+              'Email not verified. Please check your email for the verification link.',
+          });
       return res.status(401).json({
         message: 'Invalid credentials',
       });
     }
+
+    // Check if user is verified
+    if (!user._isVerified) return res.status(403).json({ message: 'Account not verified. Please check your email for verification link.'})
 
     // Compare the password with the hashed password
     const match = await bcrypt.compare(password, user.password);
