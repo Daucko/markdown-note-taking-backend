@@ -287,6 +287,11 @@ const handleResendVerification = async (req, res) => {
   const { email } = req.body;
 
   if (!email) return res.status(400).json({ message: 'Email is required' });
+
+  try {
+    // Check if user is already verified
+    const verifiedUser = await User.findOne({ email });
+  } catch (err) {}
 };
 
 const handleProfileUpdate = async (req, res) => {
