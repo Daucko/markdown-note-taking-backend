@@ -330,7 +330,8 @@ const handleResendVerification = async (req, res) => {
     ]);
 
     // Send new verification email
-    const verificationLink = `${process.env.BASE_URL}/api/auth/verify-email?token=${newVerificationToken}`;
+    const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+    const verificationLink = `${baseUrl}/api/auth/verify-email?token=${newVerificationToken}`;
 
     const emailSubject = 'New Verification Link';
     const emailMessage = `
